@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Main;
+
 import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,8 +26,9 @@ import javax.swing.JTextField;
  * @author lucas
  */
 public class Server extends Thread {
-    private static ArrayList<BufferedWriter>clientes;           
-    private static ServerSocket server; 
+
+    private static ArrayList<BufferedWriter> clientes;
+    private static ServerSocket server;
 
     public static ServerSocket getServer() {
         return server;
@@ -41,60 +43,63 @@ public class Server extends Thread {
     }
     private String nome;
     private Socket con;
-    private InputStream in;  
-    private InputStreamReader inr;  
+    private InputStream in;
+    private InputStreamReader inr;
     private BufferedReader bfr;
-    
-     /**
-    * Método construtor 
-    * @param con do tipo Socket
-    */
-    public Server(Socket con){
-       this.con = con;
-       try {
-            in  = con.getInputStream();
+
+    /**
+     * Método construtor
+     *
+     * @param con do tipo Socket
+     */
+    public Server(Socket con) {
+        this.con = con;
+        try {
+            in = con.getInputStream();
             inr = new InputStreamReader(in);
             bfr = new BufferedReader(inr);
-       } catch (IOException e) {
+        } catch (IOException e) {
             System.out.println(e);
-       }                          
+        }
     }
-    
+
     /**
-    * Método run
-    */
+     * Método run
+     */
     @Override
-    public void run(){
-      try{
-        String msg;
-        OutputStream ou =  this.con.getOutputStream();
-        Writer ouw = new OutputStreamWriter(ou);
-        BufferedWriter bfw = new BufferedWriter(ouw); 
-        clientes.add(bfw);
-        nome = msg = bfr.readLine();
-
-        while(!"Sair".equalsIgnoreCase(msg) && msg != null)
-          {           
-           msg = bfr.readLine();
-           sendToAll(bfw, msg);
-           System.out.println(msg);                                              
-           }
-       }catch (IOException e) {
-         System.out.println(e);
-       }                       
-    }  
-
-    private void sendToAll(BufferedWriter bwSaida, String msg) throws  IOException{
-        BufferedWriter bwS;
-        for(BufferedWriter bw : clientes){
-            bwS = (BufferedWriter)bw;
-            if(!(bwSaida == bwS)){
-                bw.write(nome + " -> " + msg+"\r\n");
-                bw.flush(); 
+    public void run() {
+        try {
+            String msg;
+            OutputStream ou = this.con.getOutputStream();
+            Writer ouw = new OutputStreamWriter(ou);
+            BufferedWriter bfw = new BufferedWriter(ouw);
+            clientes.add(bfw);
+            nome = msg = bfr.readLine();
+            try {
+                String sairEncript = Criptografar.encrypt("Desconectado");
+                while (!sairEncript.equalsIgnoreCase(msg) && msg != null) {
+                    msg = bfr.readLine();
+                    String msdDecipt = Criptografar.decrypt(msg);
+                    sendToAll(bfw, msdDecipt);
+                    System.out.println("Encript: " + msg);
+                    System.out.println("Decript: " + msdDecipt);
+                }
+            } catch (Exception e) {
             }
-        }       
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
-    
-    
-    
+
+    private void sendToAll(BufferedWriter bwSaida, String msg) throws IOException {
+        BufferedWriter bwS;
+        for (BufferedWriter bw : clientes) {
+            bwS = (BufferedWriter) bw;
+            if (!(bwSaida == bwS)) {
+                bw.write(nome + " -> " + msg + "\r\n");
+                bw.flush();
+            }
+        }
+    }
+
 }
