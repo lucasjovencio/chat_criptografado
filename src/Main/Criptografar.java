@@ -19,13 +19,13 @@ public final class Criptografar {
     private static KeySpec ks;
     private static PBEParameterSpec ps;
     private static final String algorithm = "PBEWithMD5AndDES";
-    private static BASE64Encoder enc = new BASE64Encoder();
-    private static BASE64Decoder dec = new BASE64Decoder();
+    private static final BASE64Encoder enc = new BASE64Encoder();
+    private static final BASE64Decoder dec = new BASE64Decoder();
     static {
         try {
             SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
             ps = new PBEParameterSpec (new byte[]{3,1,4,1,5,9,2,6}, 20);
-            ks = new PBEKeySpec ("EAlGeEen3/m8/YkO".toCharArray()); // esta ? a chave que voc? quer manter secreta.
+            ks = new PBEKeySpec ("05Bc5hswRWpwp1sew+MSoHcj28rQ0MK8".toCharArray()); // esta ? a chave que voc? quer manter secreta.
             // Obviamente quando voc? for implantar na sua empresa, use alguma outra coisa - por exemplo,
             // "05Bc5hswRWpwp1sew+MSoHcj28rQ0MK8". Nao use caracteres especiais (como ?) para nao dar problemas.
             skey = skf.generateSecret (ks);

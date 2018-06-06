@@ -109,6 +109,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
      * @throws IOException retorna IO Exception caso dê algum erro.
      */
     public void enviarMensagem(String msg) throws IOException {
+        String msdDecipt= "";
         try {
             if (msg.equals("Sair")) {
                 String msgEncript = Criptografar.encrypt("Desconectado");
@@ -117,6 +118,8 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             } else {
                 String msgCripto = Criptografar.encrypt(msg);
                 bfw.write(msgCripto+ "\r\n");
+                System.out.println("Enviado: Decript: " + msgCripto);
+                
                 texto.append(txtNome.getText() + " diz -> " + txtMsg.getText() + "\r\n");
             }
             bfw.flush();
@@ -136,14 +139,24 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         InputStreamReader inr = new InputStreamReader(in);
         BufferedReader bfr = new BufferedReader(inr);
         String msg = "";
-
+        String msdDecipt= "";
+        String txt[] = null;
         while (!"Sair".equalsIgnoreCase(msg)) {
             if (bfr.ready()) {
                 msg = bfr.readLine();
+                try{
+                    txt = msg.split(" ");
+                    msdDecipt = Criptografar.decrypt(txt[2]);
+                    
+                    System.out.println("Recebido: " + txt[1]);
+                    System.out.println("Recebido Decript: " + msdDecipt);
+                }catch(Exception e){
+                    System.out.println(e);
+                }
                 if (msg.equals("Sair")) {
                     texto.append("Servidor caiu! \r\n");
                 } else {
-                    texto.append(msg + "\r\n");
+                    texto.append(txt[0] + txt[1] + msdDecipt + "\r\n");
                 }
             }
         }

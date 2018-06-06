@@ -79,10 +79,7 @@ public class Server extends Thread {
                 String sairEncript = Criptografar.encrypt("Desconectado");
                 while (!sairEncript.equalsIgnoreCase(msg) && msg != null) {
                     msg = bfr.readLine();
-                    String msdDecipt = Criptografar.decrypt(msg);
-                    sendToAll(bfw, msdDecipt);
-                    System.out.println("Encript: " + msg);
-                    System.out.println("Decript: " + msdDecipt);
+                    sendToAll(bfw, msg);
                 }
             } catch (Exception e) {
             }
