@@ -50,7 +50,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
      * 
      */
     public Client() throws IOException {
-        JLabel lblMessage = new JLabel("Verificar!");
+        JLabel lblMessage = new JLabel("Digite seu nome");
         txtIP = new JTextField("127.0.0.1");
         txtPorta = new JTextField("12345");
         txtNome = new JTextField("Cliente");
