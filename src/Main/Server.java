@@ -16,14 +16,20 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
  *
- * @author lucas
+ * @author lucas & Fabim & Kaleber
  */
 public class Server extends Thread {
 
@@ -48,7 +54,7 @@ public class Server extends Thread {
     private BufferedReader bfr;
 
     /**
-     * Método construtor
+     * Método construtor usado para iniciar o servidor
      *
      * @param con do tipo Socket
      */
@@ -64,7 +70,11 @@ public class Server extends Thread {
     }
 
     /**
-     * Método run
+     * Método run, metodo usado para fica escudo mensagens enviadas para o servidor,
+     * é verificado se o cliente escolheu se desconectar ou enviar uma mensagem.
+     * Caso tenha escolhido enviar mensagem então o servidor retorna a mensagem enviada para todos os clientes
+     * conectados ao servidor. Caso contrario é desconectado do servidor. Para se o servidor envie a mensagem para
+     * todos os clientes ele utiliza um Metodo chamado: #sendToAll.
      */
     @Override
     public void run() {
@@ -81,13 +91,19 @@ public class Server extends Thread {
                     msg = bfr.readLine();
                     sendToAll(bfw, msg);
                 }
-            } catch (Exception e) {
+            } catch (IOException | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
+                System.out.println(e);
             }
         } catch (IOException e) {
             System.out.println(e);
         }
     }
 
+    /**
+     * Método sendToAll, metodo usado para recuperar o nome do cliente que enviou a mensagem e
+     * a mensagem do cliente, feito isso é enviado a mensagem para todos os outros clientes respeitando a
+     * estrutura de: { Nome_Do_Cliente -> Mensagem_Enviada }
+     */
     private void sendToAll(BufferedWriter bwSaida, String msg) throws IOException {
         BufferedWriter bwS;
         for (BufferedWriter bw : clientes) {

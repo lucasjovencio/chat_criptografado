@@ -15,29 +15,64 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author lucas
+ * @author lucas & Fabim & Kaleber
  */
 public class Main {
-    public static void main(String[] args)  throws IOException {
-        String porta = "12345";
-        try{
-            Server.setServer(new ServerSocket(Integer.parseInt(porta)));
-            Server.setClientes(new ArrayList<>());
-            while(true){
-                System.out.println("Aguardando conexão...");
-                Socket con = Server.getServer().accept();
-                System.out.println("Cliente conectado...");
-                Thread t = new Server(con);
-                t.start();   
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
-    }
-    
-    
-    
 
+    public static void main(String[] args) throws IOException {
+        String porta = "12345";
+        
+        /*
+            * Inicia uma Thread para Startar o servidor de mensagens
+        */
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Server.setServer(new ServerSocket(Integer.parseInt(porta)));
+                    Server.setClientes(new ArrayList<>());
+                    while (true) {
+                        System.out.println("Aguardando conexão...");
+                        Socket con = Server.getServer().accept();
+                        System.out.println("Cliente conectado...");
+                        Thread t = new Server(con);
+                        t.start();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }.start();
+        /*
+            * Inicia uma Thread iniciar um cliente
+        */
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Client app = new Client();
+                    app.conectar();
+                    app.escutar();
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+            }
+        }.start();
+        
+        /*
+            * Inicia uma Thread iniciar um cliente
+        */
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Client app = new Client();
+                    app.conectar();
+                    app.escutar();
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+            }
+        }.start();
+    }
 }

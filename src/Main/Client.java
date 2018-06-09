@@ -23,7 +23,7 @@ import javax.swing.*;
 
 /**
  *
- * @author lucas
+ * @author lucas & Fabim & Kaleber
  */
 public class Client extends JFrame implements ActionListener, KeyListener {
 
@@ -43,12 +43,18 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     private JTextField txtPorta;
     private JTextField txtNome;
 
+    /**
+     * Metodo para criar uma janela no browser para que o cliente informe o seu nome 
+     * e possa participar do chat.
+     * @throws IOException
+     * 
+     */
     public Client() throws IOException {
         JLabel lblMessage = new JLabel("Verificar!");
         txtIP = new JTextField("127.0.0.1");
         txtPorta = new JTextField("12345");
         txtNome = new JTextField("Cliente");
-        Object[] texts = {lblMessage, txtIP, txtPorta, txtNome};
+        Object[] texts = {lblMessage,txtNome};
         JOptionPane.showMessageDialog(null, texts);
         pnlContent = new JPanel();
         texto = new JTextArea(10, 20);
@@ -103,7 +109,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
 
     /**
      * *
-     * Método usado para enviar mensagem para o server socket
+     * Método usado para enviar mensagem criptografada para o server socket
      *
      * @param msg do tipo String
      * @throws IOException retorna IO Exception caso dê algum erro.
@@ -130,7 +136,8 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     }
 
     /**
-     * Método usado para receber mensagem do servidor
+     * Método usado para receber mensagem criptografada do servidor, em seguida o metodo executa
+     * a descriptografia e exibir a mensagem para o cliente.
      *
      * @throws IOException retorna IO Exception caso dê algum erro.
      */
@@ -177,6 +184,13 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         socket.close();
     }
 
+    /**
+     * *
+     * Método usado para Eevento clicque, verifica se o cliente clicou em sair ou enviar mensagem.
+     *
+     * @param e
+     */
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         try {
@@ -187,10 +201,17 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             }
         } catch (IOException e1) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+
         }
     }
-
+    
+    /**
+     * *
+     * Método usado para Eevento de pressionar a tecla ENTER, é enviado uma mensagem para o servidor.
+     *
+     * @param e
+     */
+    @Override
     public void keyPressed(KeyEvent e) {
 
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -198,7 +219,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
                 enviarMensagem(txtMsg.getText());
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
-                e1.printStackTrace();
+
             }
         }
     }
@@ -213,6 +234,11 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         // TODO Auto-generated method stub               
     }
 
+    /**
+     *  Metodo Estatico para iniciar o cliente de forma manual.
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
 
         Client app = new Client();

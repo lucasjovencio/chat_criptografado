@@ -25,9 +25,7 @@ public final class Criptografar {
         try {
             SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
             ps = new PBEParameterSpec (new byte[]{3,1,4,1,5,9,2,6}, 20);
-            ks = new PBEKeySpec ("05Bc5hswRWpwp1sew+MSoHcj28rQ0MK8".toCharArray()); // esta ? a chave que voc? quer manter secreta.
-            // Obviamente quando voc? for implantar na sua empresa, use alguma outra coisa - por exemplo,
-            // "05Bc5hswRWpwp1sew+MSoHcj28rQ0MK8". Nao use caracteres especiais (como ?) para nao dar problemas.
+            ks = new PBEKeySpec ("05Bc5hswRWpwp1sew+MSoHcj28rQ0MK8".toCharArray()); // Chave de criptografia
             skey = skf.generateSecret (ks);
         } catch (java.security.NoSuchAlgorithmException ex) {
             ex.printStackTrace();
@@ -60,26 +58,14 @@ public final class Criptografar {
         String ret = null;
         try {
             ret = new String(cipher.doFinal(dec.decodeBuffer (text)));
-        } catch (Exception ex) {
+        } catch (IOException | BadPaddingException | IllegalBlockSizeException ex) {
+            System.out.println(ex);
         }
         return ret;
     }
     public static void main(String[] args) throws Exception {
-//        String password = "oi oi hygygy "; // esta ? a tal senha do banco de dados que voc? quer criptografar
-//        String encoded = encrypt (password);
-//        System.out.println("Senha: "+password);
-//        System.out.println ("Encode: "+encoded);  // imprime "4fWCjTdEhMPEluqE2n8ci4FiqWeb+DXc"
-//        System.out.println ("Decode: "+decrypt(encoded)); // imprime "true"
             String msg = "ashdgahsgd";
             String msgCripto = encrypt(msg);
-            System.out.println("Encode "+msg);
-            System.out.println("Encode "+msgCripto);
-            System.out.println("decode "+decrypt(msgCripto));
-// Vamos alterar um caracter, s¢ para ver o que ocorre
-        //char[] enc = encoded.toCharArray();
-        //enc[2] = (char) (enc[2] + 1);
-        //encoded = new String (enc);
-        //System.out.println (encoded); // imprime "4fXCjTdEhMPEluqE2n8ci4FiqWeb+DXc"
-        //System.out.println (password.equals (PWSec.decrypt (encoded))); // imprime "false"
+            String msgDecrypt = decrypt(msgCripto);
     }
 }
